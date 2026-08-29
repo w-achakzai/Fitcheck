@@ -1,0 +1,5316 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>FitCheck</title>
+
+
+<style>
+
+@font-face{
+    font-family: 'LazyDogCustom';
+    src: url('assets/fonts/lazy_dog.ttf')format('truetype');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+
+    margin: 0;
+    padding: 0;
+
+    width: 100%;
+    height: 100%;
+
+}
+
+body {
+
+    font-family: 'LazyDogCustom';
+    font-size:30px;
+
+    background: url('assets/background/bg-flowers.png') repeat;
+
+    color: #69323c;
+
+    overflow: hidden;
+    text-shadow:
+        -2px -2px 0 #FFF, -2px -2px 0 #FFF, -2px -2px 0 #FFF,
+         -2px -2px 0 #FFF, -2px -2px 0 #FFF, -2px -2px 0 #FFF, -2px -2px 0 #FFF, -2px -2px 0 #FFF, 
+         1px 3px 0px rgba(140,88,97,0.08);
+
+}
+
+
+
+
+.fitcheck-screen {
+
+    position: fixed;
+
+    inset: 0;
+
+    width: 100vw;
+    height: 100vh;
+
+    display: none;
+
+    overflow-y: auto;
+
+    padding: 40px 25px;
+
+}
+
+
+.fitcheck-screen.active {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+}
+
+
+
+
+.screen-content {
+
+    width: 100%;
+
+    max-width: 1100px;
+
+    min-height: calc(100vh - 80px);
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    text-align: center;
+
+    margin: auto;
+
+}
+
+
+
+
+h1 {
+
+    font-size: 48px;
+
+    margin: 0 0 15px;
+
+}
+
+h2 {
+
+    font-size: 30px;
+
+    margin: 15px 0;
+
+}
+
+p {
+
+    font-size: 18px;
+
+    line-height: 1.5;
+
+}
+
+
+
+
+button {
+
+    border: 2px solid #111;
+
+    background: white;
+
+    color: #111;
+
+    padding: 14px 28px;
+
+    margin: 8px;
+
+    border-radius: 10px;
+
+    font-size: 17px;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+
+}
+
+button:hover {
+
+    background: #111;
+
+    color: white;
+
+}
+
+button:active {
+
+    transform: scale(0.97);
+
+}
+
+
+
+
+.upload-area {
+
+    width: 100%;
+
+    max-width: 950px;
+
+    margin: 25px auto;
+
+    padding: 30px;
+
+    background: rgba(255,255,255,0.9);
+
+    border: 3px dashed #555;
+
+    border-radius: 18px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+}
+
+
+
+
+input[type="file"] {
+
+    font-size: 16px;
+
+    margin: 15px;
+
+    max-width: 100%;
+
+}
+
+
+
+
+.full-outfit-option {
+
+    width: 100%;
+
+    max-width: 700px;
+
+    margin: 15px auto 5px;
+
+    padding: 15px;
+
+    border: 1px solid #bbb;
+
+    border-radius: 10px;
+
+    background: #f7f7f7;
+
+    text-align: left;
+
+}
+
+.full-outfit-option label {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    cursor: pointer;
+
+    font-size: 16px;
+
+}
+
+.full-outfit-option input {
+
+    width: 18px;
+
+    height: 18px;
+
+}
+
+
+
+.style-selector {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    justify-content: center;
+
+    gap: 8px;
+
+    margin: 10px 0 15px;
+
+}
+
+.style-selector label {
+
+    border: 1px solid #aaa;
+
+    border-radius: 8px;
+
+    padding: 8px 12px;
+
+    background: white;
+
+    cursor: pointer;
+
+    font-size: 14px;
+
+}
+
+.style-selector input {
+
+    margin-right: 5px;
+
+}
+
+
+
+
+.upload-box {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(190px, 1fr)
+        );
+
+    gap: 25px;
+
+    width: 100%;
+
+    margin-top: 25px;
+
+    padding: 20px;
+
+    justify-items: center;
+
+}
+
+
+
+
+.fitcheck-uploaded-item {
+
+    position: relative;
+
+    width: 190px;
+
+    min-height: 220px;
+
+    border: 2px solid #111;
+
+    border-radius: 14px;
+
+    background: white;
+
+    overflow: hidden;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 12px;
+
+}
+
+
+.fitcheck-uploaded-image {
+
+    width: 100%;
+
+    height: 170px;
+
+    object-fit: contain;
+
+    object-position: center;
+
+}
+
+
+
+
+.item-label {
+
+    width: 100%;
+
+    padding: 8px 4px 2px;
+
+    font-size: 13px;
+
+    font-weight: bold;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+
+}
+
+
+
+
+.full-outfit-badge {
+
+    position: absolute;
+
+    left: 7px;
+
+    top: 7px;
+
+    background: #111;
+
+    color: white;
+
+    padding: 5px 8px;
+
+    border-radius: 7px;
+
+    font-size: 11px;
+
+    z-index: 3;
+
+}
+
+
+
+
+.fitcheck-remove-button {
+
+    position: absolute;
+
+    top: 5px;
+
+    right: 5px;
+
+    width: 32px;
+
+    height: 32px;
+
+    padding: 0;
+
+    margin: 0;
+
+    border-radius: 50%;
+
+    font-size: 20px;
+
+    background: white;
+
+    z-index: 5;
+
+}
+
+
+
+
+.navigation {
+
+    width: 100%;
+
+    max-width: 1000px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    margin-top: 25px;
+
+    padding-bottom: 35px;
+
+}
+
+
+
+
+.occasion-buttons {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    justify-content: center;
+
+    max-width: 850px;
+
+    margin: 20px auto;
+
+}
+
+
+
+.wardrobe-status {
+
+    background: white;
+
+    border: 2px solid #111;
+
+    border-radius: 10px;
+
+    padding: 14px 24px;
+
+    margin: 12px;
+
+}
+
+
+
+
+.loading-spinner {
+
+    width: 60px;
+
+    height: 60px;
+
+    border: 6px solid #ccc;
+
+    border-top: 6px solid #111;
+
+    border-radius: 50%;
+
+    animation: spin 1s linear infinite;
+
+    margin: 25px;
+
+}
+
+
+@keyframes spin {
+
+    to {
+
+        transform: rotate(360deg);
+
+    }
+
+}
+
+
+
+
+.result-content {
+
+    justify-content: flex-start;
+
+    padding-top: 10px;
+
+}
+
+
+
+
+.collage {
+
+    width: min(850px, 92vw);
+
+    min-height: 500px;
+
+    max-height: 620px;
+
+    background: white;
+
+    border: 3px solid #111;
+
+    border-radius: 15px;
+
+    padding: 35px;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    grid-auto-rows: 220px;
+
+    gap: 30px;
+
+    align-items: center;
+
+    justify-items: center;
+
+   
+
+    overflow-y: auto;
+
+}
+
+
+
+.fitcheck-collage-piece {
+
+    width: 100%;
+
+    height: 220px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    overflow: hidden;
+
+}
+
+
+.fitcheck-collage-image {
+
+    width: 100%;
+
+    height: 100%;
+
+    object-fit: contain;
+
+    object-position: center;
+
+}
+
+
+
+
+.fitcheck-collage-piece.full-outfit-piece {
+
+    grid-column:
+        span 2;
+
+    height: 300px;
+
+}
+
+
+.fitcheck-collage-piece.full-outfit-piece
+.fitcheck-collage-image {
+
+    max-height: 300px;
+
+}
+
+
+
+
+.result-reason {
+
+    max-width: 850px;
+
+    font-size: 18px;
+
+    margin: 10px auto 25px;
+
+}
+
+
+
+
+.debug {
+
+    background: #111;
+
+    color: #00ff66;
+
+    padding: 15px;
+
+    border-radius: 10px;
+
+    font-family: monospace;
+
+    text-align: left;
+
+    white-space: pre-wrap;
+
+    width: 100%;
+
+    max-width: 850px;
+
+    margin: 20px 0;
+
+}
+
+
+
+
+@media (max-width: 650px) {
+
+    .fitcheck-screen {
+
+        padding: 25px 15px;
+
+    }
+
+    h1 {
+
+        font-size: 36px;
+
+    }
+
+    .screen-content {
+
+        min-height:
+            calc(100vh - 50px);
+
+    }
+
+    .fitcheck-uploaded-item {
+
+        width: 160px;
+
+    }
+
+    .upload-box {
+
+        grid-template-columns:
+            repeat(
+                auto-fit,
+                minmax(160px, 1fr)
+            );
+
+    }
+
+    .collage {
+
+        grid-template-columns:
+            1fr;
+
+        grid-auto-rows: 210px;
+
+        max-height: 600px;
+
+    }
+
+    .fitcheck-collage-piece.full-outfit-piece {
+
+        grid-column: span 1;
+
+    }
+
+    .navigation {
+
+        flex-direction: column;
+
+        align-items: center;
+
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+
+
+<section
+    id="landing-screen"
+    class="fitcheck-screen active"
+    data-fitcheck-screen>
+
+    <div class="screen-content">
+
+        <h1>
+            FITCHECK
+        </h1>
+
+        <p>
+            Your perfect day is incomplete
+            without the right outfit.
+        </p>
+
+        <div class="wardrobe-status">
+
+            <strong>
+                Your wardrobe:
+            </strong>
+
+            <span id="landing-wardrobe-count">
+                0 items saved
+            </span>
+
+        </div>
+
+        <img src="assets/buttons/Start.png"
+            alt="Start Button"
+            class="layout-btn"
+            data-action="start">
+
+        <button data-action="clear-wardrobe">
+            CLEAR WARDROBE
+        </button>
+
+    </div>
+
+</section>
+
+
+
+
+
+<section
+    id="tops-screen"
+    class="fitcheck-screen"
+    data-fitcheck-screen>
+
+    <div class="screen-content">
+
+        <h1>
+            SHIRTS / TOPS
+        </h1>
+
+        <p>
+            Upload your shirts, tops,
+            or complete outfits.
+        </p>
+
+        <p>
+            Category <strong>1 / 4</strong>
+        </p>
+
+
+        <div class="upload-area">
+
+            <h2>
+                Add your shirts
+            </h2>
+
+
+            <!-- NORMAL TOP -->
+
+            <p>
+                Upload a normal shirt or top:
+            </p>
+
+            <input
+                type="file"
+                accept="image/*"
+                multiple
+                data-fitcheck-upload
+                data-upload-category="tops"
+                data-upload-type="top">
+
+
+            <!-- FULL OUTFIT -->
+
+            <div class="full-outfit-option">
+
+                <label>
+
+                    <input
+                        type="checkbox"
+                        id="full-outfit-toggle">
+
+                    <span>
+                        This image is a COMPLETE OUTFIT
+                        (e.g. Kameez + Shalwar)
+                    </span>
+
+                </label>
+
+            </div>
+
+
+            <p>
+                Upload a complete kameez-shalwar,
+                suit, dress, or other one-piece
+                outfit using the option above.
+            </p>
+
+
+            <p>
+
+                Uploaded:
+
+                <strong
+                    data-fitcheck-upload-count="tops">
+                    0
+                </strong>
+
+            </p>
+
+
+            <div
+                class="upload-box"
+                data-fitcheck-uploads="tops">
+            </div>
+
+        </div>
+
+
+        <div class="navigation">
+
+            <button data-action="previous">
+                BACK
+            </button>
+
+            <button data-action="next">
+                NEXT
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+
+
+<section
+    id="bottoms-screen"
+    class="fitcheck-screen"
+    data-fitcheck-screen>
+
+    <div class="screen-content">
+
+        <h1>
+            BOTTOMS
+        </h1>
+
+        <p>
+            Upload pants, jeans, skirts,
+            shalwars, etc.
+        </p>
+
+        <p>
+            Category <strong>2 / 4</strong>
+        </p>
+
+
+        <div class="upload-area">
+
+            <h2>
+                Add your bottoms
+            </h2>
+
+
+            <input
+                type="file"
+                accept="image/*"
+                multiple
+                data-fitcheck-upload
+                data-upload-category="bottoms">
+
+
+            <p>
+
+                Uploaded:
+
+                <strong
+                    data-fitcheck-upload-count="bottoms">
+                    0
+                </strong>
+
+            </p>
+
+
+            <div
+                class="upload-box"
+                data-fitcheck-uploads="bottoms">
+            </div>
+
+        </div>
+
+
+        <div class="navigation">
+
+            <button data-action="previous">
+                BACK
+            </button>
+
+            <button data-action="next">
+                NEXT
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+
+<section
+    id="shoes-screen"
+    class="fitcheck-screen"
+    data-fitcheck-screen>
+
+    <div class="screen-content">
+
+        <h1>
+            SHOES
+        </h1>
+
+        <p>
+            Upload your shoes.
+        </p>
+
+        <p>
+            Category <strong>3 / 4</strong>
+        </p>
+
+
+        <div class="upload-area">
+
+            <h2>
+                Add your shoes
+            </h2>
+
+
+            <input
+                type="file"
+                accept="image/*"
+                multiple
+                data-fitcheck-upload
+                data-upload-category="shoes">
+
+
+            <p>
+                When you upload shoes,
+                FitCheck will use their selected
+                style to avoid inappropriate
+                occasions.
+            </p>
+
+
+            <p>
+
+                Uploaded:
+
+                <strong
+                    data-fitcheck-upload-count="shoes">
+                    0
+                </strong>
+
+            </p>
+
+
+            <div
+                class="upload-box"
+                data-fitcheck-uploads="shoes">
+            </div>
+
+        </div>
+
+
+        <div class="navigation">
+
+            <button data-action="previous">
+                BACK
+            </button>
+
+            <button data-action="next">
+                NEXT
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+
+
+<section
+    id="accessories-screen"
+    class="fitcheck-screen"
+    data-fitcheck-screen>
+
+    <div class="screen-content">
+
+        <h1>
+            ACCESSORIES
+        </h1>
+
+        <p>
+            Upload jewelry, watches,
+            bags and other accessories.
+        </p>
+
+        <p>
+            Category <strong>4 / 4</strong>
+        </p>
+
+
+        <div class="upload-area">
+
+            <h2>
+                Add your accessories
+            </h2>
+
+
+            <input
+                type="file"
+                accept="image/*"
+                multiple
+                data-fitcheck-upload
+                data-upload-category="accessories">
+
+
+            <p>
+
+                Uploaded:
+
+                <strong
+                    data-fitcheck-upload-count="accessories">
+                    0
+                </strong>
+
+            </p>
+
+
+            <div
+                class="upload-box"
+                data-fitcheck-uploads="accessories">
+            </div>
+
+        </div>
+
+
+        <div class="navigation">
+
+            <button data-action="previous">
+                BACK
+            </button>
+
+            <button data-action="next">
+                NEXT
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+
+<section
+    id="occasion-screen"
+    class="fitcheck-screen"
+    data-fitcheck-screen>
+
+    <div class="screen-content">
+
+        <h1>
+            WHAT'S THE OCCASION?
+        </h1>
+
+        <p>
+            Choose the kind of day
+            you're dressing for.
+        </p>
+
+
+        <div class="wardrobe-status">
+
+            <strong>
+                Wardrobe saved:
+            </strong>
+
+            <span id="occasion-wardrobe-count">
+                0 items
+            </span>
+
+        </div>
+
+
+        <div class="occasion-buttons">
+
+            <button
+                data-action="occasion"
+                data-occasion="birthday">
+
+                🎂 BIRTHDAY
+
+            </button>
+
+
+            <button
+                data-action="occasion"
+                data-occasion="formal">
+
+                🕴️ FORMAL
+
+            </button>
+
+
+            <button
+                data-action="occasion"
+                data-occasion="corporate">
+
+                💼 CORPORATE
+
+            </button>
+
+
+            <button
+                data-action="occasion"
+                data-occasion="casual">
+
+                👕 CASUAL
+
+            </button>
+
+
+            <button
+                data-action="occasion"
+                data-occasion="fancy">
+
+                ✨ FANCY
+
+            </button>
+
+        </div>
+
+
+        <button data-action="edit-wardrobe">
+            EDIT WARDROBE
+        </button>
+
+    </div>
+
+</section>
+
+
+
+
+
+<section
+    id="loading-screen"
+    class="fitcheck-screen"
+    data-fitcheck-screen>
+
+    <div class="screen-content">
+
+        <h1>
+            FITCHECK IS THINKING...
+        </h1>
+
+        <div class="loading-spinner">
+        </div>
+
+        <p data-fitcheck-loading-message>
+            Looking through your wardrobe...
+        </p>
+
+    </div>
+
+</section>
+
+
+
+
+
+<section
+    id="result-screen"
+    class="fitcheck-screen"
+    data-fitcheck-screen>
+
+    <div class="screen-content result-content">
+
+        <h1>
+            YOUR FIT
+        </h1>
+
+
+        <h2>
+
+            <span
+                data-fitcheck-result-occasion>
+            </span>
+
+        </h2>
+
+
+        <div
+            class="collage"
+            data-fitcheck-collage>
+        </div>
+
+
+        <h2>
+            Why this works
+        </h2>
+
+
+        <p
+            class="result-reason"
+            data-fitcheck-result-reason>
+        </p>
+
+
+        
+
+
+        <button data-action="shuffle-outfit">
+            SHUFFLE
+        </button>
+
+        <button data-action="another-outfit">
+            TRY ANOTHER OUTFIT
+        </button>
+
+        <button data-action="edit-wardrobe">
+             EDIT WARDROBE
+        </button>
+
+
+    </div>
+
+</section>
+
+<script>
+
+
+const FITCHECK_STORAGE_KEY = "fitcheck_wardrobe_v4";
+
+const FitCheck = {
+
+    state: {
+        currentCategory: null,
+
+        wardrobe: {
+            tops: [],
+            bottoms: [],
+            shoes: [],
+            accessories: []
+        },
+
+        occasion: null,
+        selectedOutfit: null,
+
+        previousOutfitSignature: null,
+        outfitHistory: []
+    },
+
+
+    categories: [
+        "tops",
+        "bottoms",
+        "shoes",
+        "accessories"
+    ],
+
+
+    categoryScreens: {
+        tops: "tops-screen",
+        bottoms: "bottoms-screen",
+        shoes: "shoes-screen",
+        accessories: "accessories-screen"
+    },
+
+
+    occasions: {
+        birthday: "Birthday",
+        formal: "Formal",
+        corporate: "Corporate",
+        casual: "Casual",
+        fancy: "Fancy"
+    },
+
+
+  
+
+    init() {
+
+        this.loadWardrobe();
+
+        this.updateAllCounters();
+
+        this.categories.forEach(
+            category => {
+                this.renderUploads(category);
+            }
+        );
+
+        this.hideAllScreens();
+
+        this.showScreen(
+            "landing-screen"
+        );
+    },
+
+
+    saveWardrobe() {
+
+        try {
+
+            localStorage.setItem(
+                FITCHECK_STORAGE_KEY,
+                JSON.stringify(
+                    this.state.wardrobe
+                )
+            );
+
+        } catch (error) {
+
+            console.error(
+                "Wardrobe save error:",
+                error
+            );
+
+            alert(
+                "The wardrobe could not be saved. Try smaller images."
+            );
+        }
+    },
+
+
+    loadWardrobe() {
+
+        try {
+
+            const saved =
+                localStorage.getItem(
+                    FITCHECK_STORAGE_KEY
+                );
+
+            if (!saved) {
+                return;
+            }
+
+
+            const parsed =
+                JSON.parse(saved);
+
+
+            this.state.wardrobe = {
+
+                tops:
+                    Array.isArray(
+                        parsed.tops
+                    )
+                        ? parsed.tops
+                        : [],
+
+                bottoms:
+                    Array.isArray(
+                        parsed.bottoms
+                    )
+                        ? parsed.bottoms
+                        : [],
+
+                shoes:
+                    Array.isArray(
+                        parsed.shoes
+                    )
+                        ? parsed.shoes
+                        : [],
+
+                accessories:
+                    Array.isArray(
+                        parsed.accessories
+                    )
+                        ? parsed.accessories
+                        : []
+            };
+
+
+            /*
+             * Upgrade old saved items so they
+             * work with the current engine.
+             */
+
+            this.categories.forEach(
+                category => {
+
+                    this.state
+                        .wardrobe[
+                            category
+                        ]
+                        .forEach(
+                            item => {
+
+                                if (!item.id) {
+
+                                    item.id =
+                                        category +
+                                        "-" +
+                                        Date.now() +
+                                        "-" +
+                                        Math.random()
+                                            .toString(36)
+                                            .slice(2, 8);
+                                }
+
+
+                                if (
+                                    !Array.isArray(
+                                        item.colors
+                                    )
+                                ) {
+
+                                    item.colors = [];
+                                }
+
+
+                                if (
+                                    !item.primaryColor
+                                ) {
+
+                                    item.primaryColor =
+                                        "neutral";
+                                }
+
+
+                                if (
+                                    !item.style
+                                ) {
+
+                                    item.style =
+                                        "neutral";
+                                }
+
+
+                                if (
+                                    item.isFullOutfit ===
+                                    undefined
+                                ) {
+
+                                    item.isFullOutfit =
+                                        false;
+                                }
+
+
+                                if (
+                                    item.setId ===
+                                    undefined
+                                ) {
+
+                                    item.setId =
+                                        null;
+                                }
+
+
+                                if (
+                                    item.aiAnalyzed ===
+                                    undefined
+                                ) {
+
+                                    item.aiAnalyzed =
+                                        false;
+                                }
+
+
+                                if (
+                                    item.aiAttributes ===
+                                    undefined
+                                ) {
+
+                                    item.aiAttributes =
+                                        null;
+                                }
+
+                            }
+                        );
+
+                }
+            );
+
+        } catch (error) {
+
+            console.error(
+                "Could not load wardrobe:",
+                error
+            );
+
+            /*
+             * Do NOT destroy the wardrobe if
+             * something goes wrong.
+             */
+        }
+    },
+
+
+    clearWardrobe() {
+
+        if (
+            !confirm(
+                "Delete your entire saved wardrobe?"
+            )
+        ) {
+
+            return;
+        }
+
+
+        this.state.wardrobe = {
+
+            tops: [],
+            bottoms: [],
+            shoes: [],
+            accessories: []
+        };
+
+
+        this.state.occasion =
+            null;
+
+
+        this.state.selectedOutfit =
+            null;
+
+
+        this.state.previousOutfitSignature =
+            null;
+
+
+        this.state.outfitHistory =
+            [];
+
+
+        localStorage.removeItem(
+            FITCHECK_STORAGE_KEY
+        );
+
+
+        this.categories.forEach(
+            category => {
+
+                this.renderUploads(
+                    category
+                );
+
+            }
+        );
+
+
+        this.updateAllCounters();
+
+
+        this.showScreen(
+            "landing-screen"
+        );
+    },
+
+
+    getTotalWardrobeCount() {
+
+        return (
+
+            this.state.wardrobe.tops.length +
+
+            this.state.wardrobe.bottoms.length +
+
+            this.state.wardrobe.shoes.length +
+
+            this.state.wardrobe.accessories.length
+        );
+    },
+
+
+    updateAllCounters() {
+
+        this.categories.forEach(
+            category => {
+
+                const counter =
+                    document.querySelector(
+                        `[data-fitcheck-upload-count="${category}"]`
+                    );
+
+
+                if (counter) {
+
+                    counter.textContent =
+                        this.state
+                            .wardrobe[
+                                category
+                            ]
+                            .length;
+                }
+
+            }
+        );
+
+
+        const total =
+            this.getTotalWardrobeCount();
+
+
+        const landing =
+            document.getElementById(
+                "landing-wardrobe-count"
+            );
+
+
+        if (landing) {
+
+            landing.textContent =
+                total === 1
+                    ? "1 item saved"
+                    : `${total} items saved`;
+        }
+
+
+        const occasion =
+            document.getElementById(
+                "occasion-wardrobe-count"
+            );
+
+
+        if (occasion) {
+
+            occasion.textContent =
+                total === 1
+                    ? "1 item"
+                    : `${total} items`;
+        }
+    },
+
+
+   
+
+    hideAllScreens() {
+
+        document
+            .querySelectorAll(
+                "[data-fitcheck-screen]"
+            )
+            .forEach(
+                screen => {
+
+                    screen.classList.remove(
+                        "active"
+                    );
+
+                }
+            );
+    },
+
+
+    showScreen(screenId) {
+
+        this.hideAllScreens();
+
+
+        const screen =
+            document.getElementById(
+                screenId
+            );
+
+
+        if (!screen) {
+
+            console.error(
+                "Screen missing:",
+                screenId
+            );
+
+            return;
+        }
+
+
+        screen.classList.add(
+            "active"
+        );
+
+
+        screen.scrollTop =
+            0;
+
+
+        this.updateAllCounters();
+    },
+
+
+    start() {
+
+        const total =
+            this.getTotalWardrobeCount();
+
+
+        if (total > 0) {
+
+            this.showScreen(
+                "occasion-screen"
+            );
+
+            return;
+        }
+
+
+        this.state.currentCategory =
+            "tops";
+
+
+        this.showScreen(
+            "tops-screen"
+        );
+    },
+
+
+    editWardrobe() {
+
+        this.state.currentCategory =
+            "tops";
+
+
+        this.showScreen(
+            "tops-screen"
+        );
+    },
+
+
+    nextCategory() {
+
+        const current =
+            this.state.currentCategory;
+
+
+        const currentIndex =
+            this.categories.indexOf(
+                current
+            );
+
+
+        
+
+        if (
+            current === "tops"
+        ) {
+
+            const hasTop =
+                this.state
+                    .wardrobe
+                    .tops
+                    .some(
+                        item =>
+                            !item.isFullOutfit
+                    );
+
+
+            const hasFullOutfit =
+                this.state
+                    .wardrobe
+                    .tops
+                    .some(
+                        item =>
+                            item.isFullOutfit
+                    );
+
+
+            if (
+                !hasTop &&
+                !hasFullOutfit
+            ) {
+
+                alert(
+                    "Please upload at least one shirt or complete outfit."
+                );
+
+                return;
+            }
+        }
+
+
+        
+
+        if (
+            current === "bottoms"
+        ) {
+
+            const hasBottom =
+                this.state
+                    .wardrobe
+                    .bottoms
+                    .length > 0;
+
+
+            const hasFullOutfit =
+                this.state
+                    .wardrobe
+                    .tops
+                    .some(
+                        item =>
+                            item.isFullOutfit
+                    );
+
+
+            if (
+                !hasBottom &&
+                !hasFullOutfit
+            ) {
+
+                alert(
+                    "Please upload a bottom or make sure you have uploaded a complete outfit."
+                );
+
+                return;
+            }
+        }
+
+
+
+        if (
+            current === "shoes" &&
+            this.state
+                .wardrobe
+                .shoes
+                .length === 0
+        ) {
+
+            alert(
+                "Please upload at least one pair of shoes."
+            );
+
+            return;
+        }
+
+
+        const nextIndex =
+            currentIndex + 1;
+
+
+        if (
+            nextIndex >=
+            this.categories.length
+        ) {
+
+            this.showScreen(
+                "occasion-screen"
+            );
+
+            return;
+        }
+
+
+        const nextCategory =
+            this.categories[
+                nextIndex
+            ];
+
+
+        this.state.currentCategory =
+            nextCategory;
+
+
+        this.showScreen(
+            this.categoryScreens[
+                nextCategory
+            ]
+        );
+    },
+
+
+    previousCategory() {
+
+        const current =
+            this.state.currentCategory;
+
+
+        const currentIndex =
+            this.categories.indexOf(
+                current
+            );
+
+
+        const previousIndex =
+            currentIndex - 1;
+
+
+        if (
+            previousIndex < 0
+        ) {
+
+            this.showScreen(
+                "landing-screen"
+            );
+
+            return;
+        }
+
+
+        const previousCategory =
+            this.categories[
+                previousIndex
+            ];
+
+
+        this.state.currentCategory =
+            previousCategory;
+
+
+        this.showScreen(
+            this.categoryScreens[
+                previousCategory
+            ]
+        );
+    },
+
+
+    
+
+    async addImage(
+        file,
+        category,
+        type
+    ) {
+
+        if (!file) {
+            return;
+        }
+
+
+        if (
+            !file.type.startsWith(
+                "image/"
+            )
+        ) {
+
+            alert(
+                "Please upload an image."
+            );
+
+            return;
+        }
+
+
+        const fullOutfitToggle =
+            document.getElementById(
+                "full-outfit-toggle"
+            );
+
+
+        const isFullOutfit =
+            category === "tops" &&
+            fullOutfitToggle &&
+            fullOutfitToggle.checked;
+
+
+        try {
+
+            const imageData =
+                await this.readFileAsDataURL(
+                    file
+                );
+
+
+            
+
+            const colorAnalysis =
+                await this.analyzeImageColors(
+                    imageData
+                );
+
+
+            const item = {
+
+                id:
+                    category +
+                    "-" +
+                    Date.now() +
+                    "-" +
+                    Math.random()
+                        .toString(36)
+                        .slice(2, 8),
+
+
+                category,
+
+
+                imageData,
+
+
+                name:
+                    file.name,
+
+
+                type:
+                    isFullOutfit
+                        ? "full-outfit"
+                        : (
+                            type ||
+                            category
+                        ),
+
+
+                isFullOutfit,
+
+
+                style:
+                    this.detectStyle(
+                        file.name,
+                        category
+                    ),
+
+
+                primaryColor:
+                    colorAnalysis.primaryColor,
+
+
+                colors:
+                    colorAnalysis.colors,
+
+
+                aiAnalyzed:
+                    false,
+
+
+                aiAttributes:
+                    null,
+
+
+                setId:
+                    null
+            };
+
+
+            this.state
+                .wardrobe[
+                    category
+                ]
+                .push(item);
+
+
+            this.saveWardrobe();
+
+
+            this.renderUploads(
+                category
+            );
+
+
+            this.updateAllCounters();
+
+        } catch (error) {
+
+            console.error(
+                "Upload processing error:",
+                error
+            );
+
+            alert(
+                "There was a problem processing that image. Please try again."
+            );
+        }
+    },
+
+
+    readFileAsDataURL(file) {
+
+        return new Promise(
+            (resolve, reject) => {
+
+                const reader =
+                    new FileReader();
+
+
+                reader.onload =
+                    event =>
+                        resolve(
+                            event.target.result
+                        );
+
+
+                reader.onerror =
+                    error =>
+                        reject(error);
+
+
+                reader.readAsDataURL(
+                    file
+                );
+            }
+        );
+    },
+
+
+    
+
+    analyzeImageColors(
+        imageData
+    ) {
+
+        return new Promise(
+            resolve => {
+
+                const image =
+                    new Image();
+
+
+                image.onload =
+                    () => {
+
+                        try {
+
+                            const canvas =
+                                document.createElement(
+                                    "canvas"
+                                );
+
+
+                            const ctx =
+                                canvas.getContext(
+                                    "2d",
+                                    {
+                                        willReadFrequently:
+                                            true
+                                    }
+                                );
+
+
+                            const MAX_SIZE =
+                                100;
+
+
+                            let width =
+                                image.naturalWidth;
+
+
+                            let height =
+                                image.naturalHeight;
+
+
+                            if (
+                                width >
+                                    MAX_SIZE ||
+                                height >
+                                    MAX_SIZE
+                            ) {
+
+                                const ratio =
+                                    Math.min(
+                                        MAX_SIZE /
+                                            width,
+
+                                        MAX_SIZE /
+                                            height
+                                    );
+
+
+                                width =
+                                    Math.max(
+                                        1,
+                                        Math.round(
+                                            width *
+                                            ratio
+                                        )
+                                    );
+
+
+                                height =
+                                    Math.max(
+                                        1,
+                                        Math.round(
+                                            height *
+                                            ratio
+                                        )
+                                    );
+                            }
+
+
+                            canvas.width =
+                                width;
+
+
+                            canvas.height =
+                                height;
+
+
+                            ctx.drawImage(
+                                image,
+                                0,
+                                0,
+                                width,
+                                height
+                            );
+
+
+                            const data =
+                                ctx
+                                    .getImageData(
+                                        0,
+                                        0,
+                                        width,
+                                        height
+                                    )
+                                    .data;
+
+
+                            const buckets =
+                                {};
+
+
+                            
+
+                            for (
+                                let i = 0;
+                                i < data.length;
+                                i += 16
+                            ) {
+
+                                const r =
+                                    data[i];
+
+
+                                const g =
+                                    data[i + 1];
+
+
+                                const b =
+                                    data[i + 2];
+
+
+                                const a =
+                                    data[i + 3];
+
+
+                                if (
+                                    a < 100
+                                ) {
+                                    continue;
+                                }
+
+
+                               
+
+                                if (
+                                    r > 245 &&
+                                    g > 245 &&
+                                    b > 245
+                                ) {
+
+                                    continue;
+                                }
+
+
+                                if (
+                                    r < 8 &&
+                                    g < 8 &&
+                                    b < 8
+                                ) {
+
+                                    continue;
+                                }
+
+
+                                const rb =
+                                    Math.round(
+                                        r / 32
+                                    ) * 32;
+
+
+                                const gb =
+                                    Math.round(
+                                        g / 32
+                                    ) * 32;
+
+
+                                const bb =
+                                    Math.round(
+                                        b / 32
+                                    ) * 32;
+
+
+                                const key =
+                                    `${rb},${gb},${bb}`;
+
+
+                                buckets[key] =
+                                    (
+                                        buckets[key] ||
+                                        0
+                                    ) + 1;
+                            }
+
+
+                            const sorted =
+                                Object
+                                    .entries(
+                                        buckets
+                                    )
+                                    .sort(
+                                        (a, b) =>
+                                            b[1] -
+                                            a[1]
+                                    )
+                                    .slice(
+                                        0,
+                                        5
+                                    );
+
+
+                            const colors =
+                                sorted.map(
+                                    ([key]) => {
+
+                                        const [
+                                            r,
+                                            g,
+                                            b
+                                        ] =
+                                            key
+                                                .split(
+                                                    ","
+                                                )
+                                                .map(
+                                                    Number
+                                                );
+
+
+                                        return {
+
+                                            r,
+
+                                            g,
+
+                                            b,
+
+                                            name:
+                                                this
+                                                    .rgbToColorName(
+                                                        r,
+                                                        g,
+                                                        b
+                                                    )
+                                        };
+                                    }
+                                );
+
+
+                            resolve({
+
+                                colors,
+
+                                primaryColor:
+                                    colors.length
+                                        ? colors[0]
+                                            .name
+                                        : "neutral"
+                            });
+
+                        } catch (error) {
+
+                            console.error(
+                                "Color analysis error:",
+                                error
+                            );
+
+
+                            resolve({
+
+                                colors: [],
+
+                                primaryColor:
+                                    "neutral"
+                            });
+                        }
+                    };
+
+
+                image.onerror =
+                    () => {
+
+                        resolve({
+
+                            colors: [],
+
+                            primaryColor:
+                                "neutral"
+                        });
+                    };
+
+
+                image.src =
+                    imageData;
+            }
+        );
+    },
+
+
+    rgbToColorName(
+        r,
+        g,
+        b
+    ) {
+
+        const max =
+            Math.max(
+                r,
+                g,
+                b
+            );
+
+
+        const min =
+            Math.min(
+                r,
+                g,
+                b
+            );
+
+
+        const brightness =
+            (
+                r +
+                g +
+                b
+            ) / 3;
+
+
+        const saturation =
+            max === 0
+                ? 0
+                : (
+                    max -
+                    min
+                ) / max;
+
+
+        if (
+            brightness > 225 &&
+            saturation < 0.15
+        ) {
+
+            return "white";
+        }
+
+
+        if (
+            brightness < 45 &&
+            saturation < 0.3
+        ) {
+
+            return "black";
+        }
+
+
+        if (
+            saturation < 0.15 &&
+            brightness < 100
+        ) {
+
+            return "dark-gray";
+        }
+
+
+        if (
+            saturation < 0.15 &&
+            brightness < 190
+        ) {
+
+            return "gray";
+        }
+
+
+        if (
+            saturation < 0.18 &&
+            brightness >= 190
+        ) {
+
+            return "cream";
+        }
+
+
+        if (
+            r > g * 1.35 &&
+            r > b * 1.25
+        ) {
+
+            return brightness < 100
+                ? "burgundy"
+                : "red";
+        }
+
+
+        if (
+            r > b * 1.25 &&
+            g > b * 1.15 &&
+            r > 150 &&
+            g > 120
+        ) {
+
+            return "orange";
+        }
+
+
+        if (
+            r > 150 &&
+            g > 130 &&
+            b < 100
+        ) {
+
+            return "yellow";
+        }
+
+
+        if (
+            g > r * 1.2 &&
+            g > b * 1.05
+        ) {
+
+            return b > 100
+                ? "teal"
+                : "green";
+        }
+
+
+        if (
+            b > r * 1.2 &&
+            b > g * 1.05
+        ) {
+
+            return (
+                r > 80 &&
+                b > 120
+            )
+                ? "purple"
+                : "blue";
+        }
+
+
+        if (
+            r > 120 &&
+            b > 100 &&
+            r > g * 1.1
+        ) {
+
+            return "purple";
+        }
+
+
+        if (
+            r > b * 1.25 &&
+            g > b * 1.15 &&
+            r > 90 &&
+            g > 60
+        ) {
+
+            return "brown";
+        }
+
+
+        return "neutral";
+    },
+
+
+    colorFamily(color) {
+
+        const map = {
+
+            white:
+                "neutral",
+
+            black:
+                "neutral",
+
+            gray:
+                "neutral",
+
+            "dark-gray":
+                "neutral",
+
+            cream:
+                "neutral",
+
+            brown:
+                "earth",
+
+            red:
+                "warm",
+
+            orange:
+                "warm",
+
+            yellow:
+                "warm",
+
+            burgundy:
+                "warm",
+
+            green:
+                "cool",
+
+            teal:
+                "cool",
+
+            blue:
+                "cool",
+
+            purple:
+                "cool",
+
+            neutral:
+                "neutral"
+        };
+
+
+        return (
+            map[color] ||
+            "neutral"
+        );
+    },
+
+
+    colorCompatibility(
+        colorA,
+        colorB
+    ) {
+
+        if (
+            !colorA ||
+            !colorB
+        ) {
+
+            return 0;
+        }
+
+
+        if (
+            colorA === colorB
+        ) {
+
+            return 18;
+        }
+
+
+        const neutrals = [
+
+            "white",
+            "black",
+            "gray",
+            "dark-gray",
+            "cream",
+            "neutral"
+        ];
+
+
+        if (
+            neutrals.includes(
+                colorA
+            ) ||
+            neutrals.includes(
+                colorB
+            )
+        ) {
+
+            return 25;
+        }
+
+
+        const goodPairs = [
+
+            ["blue", "brown"],
+            ["blue", "cream"],
+            ["blue", "orange"],
+            ["blue", "white"],
+
+            ["green", "cream"],
+            ["green", "brown"],
+
+            ["red", "black"],
+            ["red", "white"],
+
+            ["burgundy", "black"],
+            ["burgundy", "cream"],
+
+            ["purple", "cream"],
+            ["purple", "gray"],
+
+            ["yellow", "blue"],
+            ["yellow", "purple"],
+
+            ["orange", "blue"],
+            ["orange", "cream"],
+
+            ["brown", "cream"],
+            ["brown", "blue"]
+        ];
+
+
+        if (
+            goodPairs.some(
+                pair =>
+                    pair.includes(
+                        colorA
+                    ) &&
+                    pair.includes(
+                        colorB
+                    )
+            )
+        ) {
+
+            return 28;
+        }
+
+
+        if (
+            this.colorFamily(
+                colorA
+            ) ===
+            this.colorFamily(
+                colorB
+            )
+        ) {
+
+            return 10;
+        }
+
+
+        return -18;
+    },
+
+
+    getColorScore(items) {
+
+        const colors =
+            items
+                .filter(Boolean)
+                .flatMap(
+                    item => {
+
+                        if (
+                            Array.isArray(
+                                item.colors
+                            ) &&
+                            item.colors.length
+                        ) {
+
+                            return item.colors
+                                .slice(
+                                    0,
+                                    2
+                                )
+                                .map(
+                                    color =>
+                                        color.name
+                                );
+                        }
+
+
+                        return item.primaryColor
+                            ? [
+                                item.primaryColor
+                            ]
+                            : [];
+                    }
+                );
+
+
+        if (
+            colors.length < 2
+        ) {
+
+            return 10;
+        }
+
+
+        let score = 0;
+
+
+        for (
+            let i = 0;
+            i < colors.length;
+            i++
+        ) {
+
+            for (
+                let j = i + 1;
+                j < colors.length;
+                j++
+            ) {
+
+                score +=
+                    this.colorCompatibility(
+                        colors[i],
+                        colors[j]
+                    );
+            }
+        }
+
+
+        return score;
+    },
+
+
+
+
+    detectStyle(
+        filename,
+        category
+    ) {
+
+        const name =
+            String(
+                filename || ""
+            ).toLowerCase();
+
+
+       
+
+        if (
+            category === "shoes"
+        ) {
+
+            
+
+            if (
+
+                name.includes("loafer") ||
+                name.includes("oxford") ||
+                name.includes("formal") ||
+                name.includes("office") ||
+                name.includes("corporate") ||
+                name.includes("dress-shoe") ||
+                name.includes("dress_shoe")
+
+            ) {
+
+                return "formal";
+            }
+
+
+            
+
+            if (
+
+                name.includes("heel") ||
+                name.includes("heels") ||
+                name.includes("stiletto") ||
+                name.includes("party") ||
+                name.includes("fancy") ||
+                name.includes("glam") ||
+                name.includes("butterfly")
+
+            ) {
+
+                return "fancy";
+            }
+
+
+            
+
+            if (
+
+                name.includes("sneaker") ||
+                name.includes("trainer") ||
+                name.includes("casual") ||
+                name.includes("canvas")
+
+            ) {
+
+                return "casual";
+            }
+        }
+
+
+       
+
+        if (
+
+            name.includes("blazer") ||
+            name.includes("suit") ||
+            name.includes("formal") ||
+            name.includes("office") ||
+            name.includes("corporate")
+
+        ) {
+
+            return "formal";
+        }
+
+
+        if (
+
+            name.includes("party") ||
+            name.includes("fancy") ||
+            name.includes("glam") ||
+            name.includes("dressy")
+
+        ) {
+
+            return "fancy";
+        }
+
+
+        if (
+
+            name.includes("jean") ||
+            name.includes("hoodie") ||
+            name.includes("tshirt") ||
+            name.includes("t-shirt") ||
+            name.includes("casual")
+
+        ) {
+
+            return "casual";
+        }
+
+
+        return "neutral";
+    },
+
+
+
+
+    getOccasionRules(
+        occasion
+    ) {
+
+        const rules = {
+
+            corporate: {
+
+                preferredStyles:
+                    [
+                        "formal",
+                        "neutral"
+                    ],
+
+                forbiddenStyles:
+                    [
+                        "fancy"
+                    ],
+
+                preferredShoes:
+                    [
+                        "formal",
+                        "neutral"
+                    ],
+
+                forbiddenShoes:
+                    [
+                        "fancy"
+                    ],
+
+                targetFormality:
+                    8
+            },
+
+
+            formal: {
+
+                preferredStyles:
+                    [
+                        "formal",
+                        "fancy",
+                        "neutral"
+                    ],
+
+                forbiddenStyles:
+                    [
+                        "casual"
+                    ],
+
+                preferredShoes:
+                    [
+                        "formal",
+                        "fancy"
+                    ],
+
+                forbiddenShoes:
+                    [
+                        "casual"
+                    ],
+
+                targetFormality:
+                    8
+            },
+
+
+            fancy: {
+
+                preferredStyles:
+                    [
+                        "fancy",
+                        "formal"
+                    ],
+
+                forbiddenStyles:
+                    [
+                        "casual"
+                    ],
+
+                preferredShoes:
+                    [
+                        "fancy",
+                        "formal"
+                    ],
+
+                forbiddenShoes:
+                    [
+                        "casual"
+                    ],
+
+                targetFormality:
+                    9
+            },
+
+
+            birthday: {
+
+                preferredStyles:
+                    [
+                        "fancy",
+                        "neutral",
+                        "casual"
+                    ],
+
+                forbiddenStyles:
+                    [],
+
+                preferredShoes:
+                    [
+                        "fancy",
+                        "casual",
+                        "formal"
+                    ],
+
+                forbiddenShoes:
+                    [],
+
+                targetFormality:
+                    6
+            },
+
+
+            casual: {
+
+                preferredStyles:
+                    [
+                        "casual",
+                        "neutral"
+                    ],
+
+                forbiddenStyles:
+                    [
+                        "fancy"
+                    ],
+
+                preferredShoes:
+                    [
+                        "casual",
+                        "neutral"
+                    ],
+
+                forbiddenShoes:
+                    [],
+
+                targetFormality:
+                    3
+            }
+        };
+
+
+        return (
+            rules[occasion] ||
+            rules.casual
+        );
+    },
+
+
+    getStyleScore(
+        item,
+        occasion
+    ) {
+
+        if (!item) {
+            return 0;
+        }
+
+
+        const rules =
+            this.getOccasionRules(
+                occasion
+            );
+
+
+        if (
+            rules
+                .forbiddenStyles
+                .includes(
+                    item.style
+                )
+        ) {
+
+            return -1000;
+        }
+
+
+        if (
+            rules
+                .preferredStyles
+                .includes(
+                    item.style
+                )
+        ) {
+
+            return 35;
+        }
+
+
+        return 5;
+    },
+
+
+    getShoeScore(
+        shoe,
+        occasion
+    ) {
+
+        if (!shoe) {
+            return -1000;
+        }
+
+
+        const rules =
+            this.getOccasionRules(
+                occasion
+            );
+
+
+        if (
+            rules
+                .forbiddenShoes
+                .includes(
+                    shoe.style
+                )
+        ) {
+
+            return -1000;
+        }
+
+
+        if (
+            rules
+                .preferredShoes
+                .includes(
+                    shoe.style
+                )
+        ) {
+
+            return 50;
+        }
+
+
+        return 5;
+    },
+
+
+    getFormality(item) {
+
+        if (!item) {
+            return 5;
+        }
+
+
+        const values = {
+
+            casual:
+                2,
+
+            neutral:
+                5,
+
+            formal:
+                8,
+
+            fancy:
+                9
+        };
+
+
+        return (
+            values[item.style] ||
+            5
+        );
+    },
+
+
+    getFormalityScore(
+        items,
+        occasion
+    ) {
+
+        const rules =
+            this.getOccasionRules(
+                occasion
+            );
+
+
+        const validItems =
+            items.filter(
+                Boolean
+            );
+
+
+        if (
+            !validItems.length
+        ) {
+
+            return 0;
+        }
+
+
+        const average =
+            validItems.reduce(
+                (
+                    sum,
+                    item
+                ) =>
+                    sum +
+                    this.getFormality(
+                        item
+                    ),
+                0
+            ) /
+            validItems.length;
+
+
+        const difference =
+            Math.abs(
+                average -
+                rules.targetFormality
+            );
+
+
+        return Math.max(
+            0,
+            40 -
+            difference * 8
+        );
+    },
+
+
+    
+
+    areMatchingSet(
+        a,
+        b
+    ) {
+
+        if (
+            !a ||
+            !b
+        ) {
+
+            return false;
+        }
+
+
+        return (
+
+            !!a.setId &&
+
+            !!b.setId &&
+
+            a.setId ===
+            b.setId
+        );
+    },
+
+
+    validateSet(
+        top,
+        bottom
+    ) {
+
+        if (
+            !top ||
+            !bottom
+        ) {
+
+            return true;
+        }
+
+
+        
+
+        if (
+            top.setId
+        ) {
+
+            return (
+                bottom.setId ===
+                top.setId
+            );
+        }
+
+
+
+        if (
+            bottom.setId
+        ) {
+
+            return (
+                top.setId ===
+                bottom.setId
+            );
+        }
+
+
+        return true;
+    },
+
+
+    linkMatchingSet(
+        topId,
+        bottomId
+    ) {
+
+        const top =
+            this.state
+                .wardrobe
+                .tops
+                .find(
+                    item =>
+                        item.id ===
+                        topId
+                );
+
+
+        const bottom =
+            this.state
+                .wardrobe
+                .bottoms
+                .find(
+                    item =>
+                        item.id ===
+                        bottomId
+                );
+
+
+        if (
+            !top ||
+            !bottom
+        ) {
+
+            return false;
+        }
+
+
+        const setId =
+            "SET-" +
+            Date.now() +
+            "-" +
+            Math.random()
+                .toString(36)
+                .slice(2, 7);
+
+
+        top.setId =
+            setId;
+
+
+        bottom.setId =
+            setId;
+
+
+        this.saveWardrobe();
+
+
+        return true;
+    },
+
+
+   
+
+    selectAccessories(
+        accessories,
+        baseItems
+    ) {
+
+        if (
+            !accessories ||
+            !accessories.length
+        ) {
+
+            return [];
+        }
+
+
+        const ranked =
+            accessories
+                .map(
+                    item => ({
+
+                        item,
+
+                        score:
+
+                            this.getColorScore(
+                                [
+                                    ...baseItems,
+                                    item
+                                ]
+                            )
+
+                            +
+
+                            this.getStyleScore(
+                                item,
+                                this.state
+                                    .occasion
+                            )
+
+                    })
+                )
+                .sort(
+                    (a, b) =>
+                        b.score -
+                        a.score
+                );
+
+
+        
+
+        if (
+            ranked.length
+        ) {
+
+            return [
+                ranked[0].item
+            ];
+        }
+
+
+        return [];
+    },
+
+
+  
+
+    isValidOutfit(
+        outfit
+    ) {
+
+        const occasion =
+            this.state.occasion;
+
+
+        
+
+        if (
+            outfit.fullOutfit
+        ) {
+
+            if (
+                outfit.top ||
+                outfit.bottom
+            ) {
+
+                return false;
+            }
+
+        } else {
+
+            
+            if (
+                !outfit.top ||
+                !outfit.bottom
+            ) {
+
+                return false;
+            }
+
+
+            
+
+            if (
+                !this.validateSet(
+                    outfit.top,
+                    outfit.bottom
+                )
+            ) {
+
+                return false;
+            }
+        }
+
+
+       
+
+        if (
+            !outfit.shoes
+        ) {
+
+            return false;
+        }
+
+
+       
+
+        if (
+            this.getShoeScore(
+                outfit.shoes,
+                occasion
+            ) <= -500
+        ) {
+
+            return false;
+        }
+
+
+        const clothingItems = [
+
+            outfit.fullOutfit ||
+                outfit.top,
+
+            outfit.bottom,
+
+            outfit.shoes,
+
+            ...(outfit.accessories || [])
+
+        ].filter(Boolean);
+
+
+        
+
+        const analyzed =
+            clothingItems.filter(
+                item =>
+
+                    item.primaryColor &&
+
+                    item.primaryColor !==
+                        "neutral"
+
+            ).length;
+
+
+        if (
+            analyzed >= 3
+        ) {
+
+            const colorScore =
+                this.getColorScore(
+                    clothingItems
+                );
+
+
+            if (
+                colorScore < -30
+            ) {
+
+                return false;
+            }
+        }
+
+
+        return true;
+    },
+
+
+   
+
+    createOutfitSignature(
+        top,
+        bottom,
+        shoes,
+        accessories,
+        fullOutfit
+    ) {
+
+        return [
+
+            fullOutfit
+                ? fullOutfit.id
+                : "none",
+
+            top
+                ? top.id
+                : "none",
+
+            bottom
+                ? bottom.id
+                : "none",
+
+            shoes
+                ? shoes.id
+                : "none",
+
+            ...(accessories || [])
+                .map(
+                    item =>
+                        item.id
+                )
+                .sort()
+
+        ].join("|");
+    },
+
+
+
+
+    scoreOutfit(
+        outfit
+    ) {
+
+        const occasion =
+            this.state.occasion;
+
+
+        const items = [
+
+            outfit.fullOutfit ||
+                outfit.top,
+
+            outfit.bottom,
+
+            outfit.shoes,
+
+            ...(outfit.accessories || [])
+
+        ].filter(Boolean);
+
+
+        let score = 0;
+
+
+        
+
+        score +=
+            this.getColorScore(
+                items
+            );
+
+
+        
+
+        if (
+            outfit.top
+        ) {
+
+            score +=
+                this.getStyleScore(
+                    outfit.top,
+                    occasion
+                );
+        }
+
+
+        if (
+            outfit.bottom
+        ) {
+
+            score +=
+                this.getStyleScore(
+                    outfit.bottom,
+                    occasion
+                );
+        }
+
+
+
+        score +=
+            this.getShoeScore(
+                outfit.shoes,
+                occasion
+            );
+
+
+
+        score +=
+            this.getFormalityScore(
+                items,
+                occasion
+            );
+
+
+       
+
+        if (
+            outfit.fullOutfit
+        ) {
+
+            score +=
+                120;
+        }
+
+
+        
+
+        if (
+
+            outfit.top &&
+
+            outfit.bottom &&
+
+            this.areMatchingSet(
+                outfit.top,
+                outfit.bottom
+            )
+
+        ) {
+
+            score +=
+                250;
+        }
+
+
+       
+
+        if (
+            outfit.signature ===
+            this.state
+                .previousOutfitSignature
+        ) {
+
+            score -=
+                5000;
+        }
+
+
+       
+
+        if (
+            this.state
+                .outfitHistory
+                .includes(
+                    outfit.signature
+                )
+        ) {
+
+            score -=
+                1000;
+        }
+
+
+       
+
+        score +=
+            Math.random() * 4;
+
+
+        return score;
+    },
+
+
+  
+
+    generateCandidates() {
+
+        const wardrobe =
+            this.state.wardrobe;
+
+
+        const candidates =
+            [];
+
+
+        const fullOutfits =
+            wardrobe
+                .tops
+                .filter(
+                    item =>
+                        item.isFullOutfit
+                );
+
+
+        const normalTops =
+            wardrobe
+                .tops
+                .filter(
+                    item =>
+                        !item.isFullOutfit
+                );
+
+
+
+        fullOutfits.forEach(
+            fullOutfit => {
+
+                wardrobe
+                    .shoes
+                    .forEach(
+                        shoe => {
+
+                            const baseItems = [
+
+                                fullOutfit,
+
+                                shoe
+
+                            ];
+
+
+                            const accessories =
+                                this.selectAccessories(
+                                    wardrobe
+                                        .accessories,
+
+                                    baseItems
+                                );
+
+
+                          
+                            const outfit = {
+
+                                fullOutfit:
+
+                                    fullOutfit,
+
+
+                                top:
+                                    null,
+
+
+                                bottom:
+                                    null,
+
+
+                                shoes:
+                                    shoe,
+
+
+                                accessories:
+
+
+                                    accessories,
+
+
+                                signature:
+
+                                    this
+                                        .createOutfitSignature(
+                                            null,
+                                            null,
+                                            shoe,
+                                            accessories,
+                                            fullOutfit
+                                        )
+                            };
+
+
+                            if (
+                                this.isValidOutfit(
+                                    outfit
+                                )
+                            ) {
+
+                                outfit.score =
+                                    this.scoreOutfit(
+                                        outfit
+                                    );
+
+
+                                candidates.push(
+                                    outfit
+                                );
+                            }
+
+                        }
+                    );
+            }
+        );
+
+
+       
+
+        normalTops.forEach(
+            top => {
+
+                wardrobe
+                    .bottoms
+                    .forEach(
+                        bottom => {
+
+                          
+
+                            if (
+                                !this.validateSet(
+                                    top,
+                                    bottom
+                                )
+                            ) {
+
+                                return;
+                            }
+
+
+                            wardrobe
+                                .shoes
+                                .forEach(
+                                    shoe => {
+
+                                        const baseItems = [
+
+                                            top,
+
+                                            bottom,
+
+                                            shoe
+
+                                        ];
+
+
+                                        const accessories =
+                                            this
+                                                .selectAccessories(
+                                                    wardrobe
+                                                        .accessories,
+
+                                                    baseItems
+                                                );
+
+
+                                        const outfit = {
+
+                                            fullOutfit:
+                                                null,
+
+
+                                            top:
+                                                top,
+
+
+                                            bottom:
+                                                bottom,
+
+
+                                            shoes:
+                                                shoe,
+
+
+                                            accessories:
+                                                accessories,
+
+
+                                            signature:
+
+                                                this
+                                                    .createOutfitSignature(
+                                                        top,
+                                                        bottom,
+                                                        shoe,
+                                                        accessories,
+                                                        null
+                                                    )
+                                        };
+
+
+                                        if (
+                                            this.isValidOutfit(
+                                                outfit
+                                            )
+                                        ) {
+
+                                            outfit.score =
+                                                this
+                                                    .scoreOutfit(
+                                                        outfit
+                                                    );
+
+
+                                            candidates.push(
+                                                outfit
+                                            );
+                                        }
+
+                                    }
+                                );
+
+                        }
+                    );
+
+            }
+        );
+
+
+        return candidates;
+    },
+
+
+
+
+    generateSmartOutfit() {
+
+        const candidates =
+            this.generateCandidates();
+
+
+       
+
+        if (
+            !candidates.length
+        ) {
+
+            return this
+                .generateFallbackOutfit();
+        }
+
+
+        
+
+        candidates.sort(
+            (a, b) =>
+                b.score -
+                a.score
+        );
+
+
+        const topScore =
+            candidates[0].score;
+
+
+
+        const qualityThreshold =
+            topScore -
+            25;
+
+
+        const strongCandidates =
+            candidates.filter(
+                candidate =>
+                    candidate.score >=
+                    qualityThreshold
+            );
+
+
+
+        let choices =
+            strongCandidates.filter(
+                candidate =>
+
+                    !this.state
+                        .outfitHistory
+                        .includes(
+                            candidate.signature
+                        )
+
+                    &&
+
+                    candidate.signature !==
+                        this.state
+                            .previousOutfitSignature
+            );
+
+
+
+        if (
+            !choices.length
+        ) {
+
+            choices =
+                strongCandidates;
+        }
+
+
+
+        const pool =
+            choices.slice(
+                0,
+                Math.min(
+                    5,
+                    choices.length
+                )
+            );
+
+
+        const selected =
+            this.randomItem(
+                pool
+            );
+
+
+        if (!selected) {
+
+            return this
+                .generateFallbackOutfit();
+        }
+
+
+        selected.reason =
+            this.getReason(
+                selected
+            );
+
+
+        this.state
+            .previousOutfitSignature =
+                selected.signature;
+
+
+        this.state
+            .outfitHistory
+            .push(
+                selected.signature
+            );
+
+
+
+        if (
+            this.state
+                .outfitHistory
+                .length > 30
+        ) {
+
+            this.state
+                .outfitHistory
+                .shift();
+        }
+
+
+        return selected;
+    },
+
+
+   
+
+    generateFallbackOutfit() {
+
+        const wardrobe =
+            this.state.wardrobe;
+
+
+       
+
+        const fullOutfit =
+            wardrobe
+                .tops
+                .find(
+                    item =>
+                        item.isFullOutfit
+                );
+
+
+        if (
+            fullOutfit &&
+            wardrobe.shoes.length
+        ) {
+
+          
+
+            const compatibleShoes =
+                wardrobe
+                    .shoes
+                    .filter(
+                        shoe =>
+                            this.getShoeScore(
+                                shoe,
+                                this.state
+                                    .occasion
+                            ) > -500
+                    );
+
+
+            const shoe =
+                compatibleShoes.length
+                    ? compatibleShoes[0]
+                    : wardrobe.shoes[0];
+
+
+            const outfit = {
+
+                fullOutfit,
+
+                top:
+                    null,
+
+                bottom:
+                    null,
+
+                shoes:
+                    shoe,
+
+                accessories:
+                    [],
+
+                signature:
+                    this
+                        .createOutfitSignature(
+                            null,
+                            null,
+                            shoe,
+                            [],
+                            fullOutfit
+                        ),
+
+                score:
+                    0,
+
+                reason:
+                    "FitCheck kept your complete outfit together and selected the closest available footwear option."
+            };
+
+
+            return outfit;
+        }
+
+
+        
+
+        const top =
+            wardrobe
+                .tops
+                .find(
+                    item =>
+                        !item.isFullOutfit
+                );
+
+
+        const bottom =
+            wardrobe
+                .bottoms[0];
+
+
+        const compatibleShoes =
+            wardrobe
+                .shoes
+                .filter(
+                    shoe =>
+                        this.getShoeScore(
+                            shoe,
+                            this.state
+                                .occasion
+                        ) > -500
+                );
+
+
+        const shoe =
+            compatibleShoes.length
+                ? compatibleShoes[0]
+                : wardrobe.shoes[0];
+
+
+        const outfit = {
+
+            fullOutfit:
+                null,
+
+            top,
+
+            bottom,
+
+            shoes:
+                shoe,
+
+            accessories:
+                [],
+
+            signature:
+                this
+                    .createOutfitSignature(
+                        top,
+                        bottom,
+                        shoe,
+                        [],
+                        null
+                    ),
+
+            score:
+                0,
+
+            reason:
+                "Your wardrobe has limited compatible combinations, so FitCheck selected the closest available outfit."
+        };
+
+
+        return outfit;
+    },
+
+
+
+
+    getReason(
+        outfit
+    ) {
+
+        const occasion =
+            this.state.occasion;
+
+
+        if (
+            outfit.fullOutfit
+        ) {
+
+            if (
+                occasion ===
+                "corporate"
+            ) {
+
+                return (
+                    "FitCheck kept your complete outfit together and selected footwear appropriate for a professional setting."
+                );
+            }
+
+
+            return (
+                "FitCheck kept your complete outfit together and selected complementary footwear and accessories."
+            );
+        }
+
+
+        if (
+
+            outfit.top &&
+
+            outfit.bottom &&
+
+            this.areMatchingSet(
+                outfit.top,
+                outfit.bottom
+            )
+
+        ) {
+
+            return (
+                "FitCheck recognized your matching set and kept the pieces together while selecting complementary footwear."
+            );
+        }
+
+
+        if (
+            occasion ===
+            "corporate"
+        ) {
+
+            return (
+                "FitCheck prioritized professional formality, compatible colors, and appropriate footwear."
+            );
+        }
+
+
+        if (
+            occasion ===
+            "formal"
+        ) {
+
+            return (
+                "FitCheck prioritized formality, color harmony, and coordinated footwear."
+            );
+        }
+
+
+        if (
+            occasion ===
+            "fancy"
+        ) {
+
+            return (
+                "FitCheck prioritized elevated pieces, compatible colors, and dressier footwear."
+            );
+        }
+
+
+        if (
+            occasion ===
+            "birthday"
+        ) {
+
+            return (
+                "FitCheck balanced color harmony, occasion suitability, and wardrobe variety."
+            );
+        }
+
+
+        return (
+            "FitCheck prioritized a relaxed combination with compatible colors, style, and footwear."
+        );
+    },
+
+
+    /* =====================================================
+       GENERATION FLOW
+       ===================================================== */
+
+    selectOccasion(
+        occasion
+    ) {
+
+        this.state.occasion =
+            occasion;
+
+
+        this.generateOutfit();
+    },
+
+
+    generateOutfit() {
+
+        /*
+         * Show loading screen.
+         */
+
+        this.showScreen(
+            "loading-screen"
+        );
+
+
+        this.updateLoadingMessage(
+            "Looking through your wardrobe..."
+        );
+
+
+       
+
+        setTimeout(
+            () => {
+
+                try {
+
+                    this.updateLoadingMessage(
+                        "Checking colors, style and occasion..."
+                    );
+
+
+                    const outfit =
+                        this
+                            .generateSmartOutfit();
+
+
+                    if (
+                        !outfit
+                    ) {
+
+                        throw new Error(
+                            "No outfit was generated."
+                        );
+                    }
+
+
+                    this.updateLoadingMessage(
+                        "Your outfit is ready!"
+                    );
+
+
+                    this.state.selectedOutfit =
+                        outfit;
+
+
+                    this.renderCollage(
+                        outfit
+                    );
+
+
+                    this.renderOutfitDetails(
+                        outfit
+                    );
+
+
+                    /*
+                     * Very short transition.
+                     */
+
+                    setTimeout(
+                        () => {
+
+                            this.showScreen(
+                                "result-screen"
+                            );
+
+                        },
+                        100
+                    );
+
+                } catch (error) {
+
+
+                    console.error(
+                        "FITCHECK OUTFIT GENERATION ERROR:",
+                        error
+                    );
+
+
+                    this.updateLoadingMessage(
+                        "Something went wrong. Returning to your wardrobe..."
+                    );
+
+
+                    setTimeout(
+                        () => {
+
+                            alert(
+                                "FitCheck encountered an error while creating the outfit. Your wardrobe is still saved."
+                            );
+
+
+                            this.showScreen(
+                                "occasion-screen"
+                            );
+
+                        },
+                        300
+                    );
+                }
+
+            },
+            50
+        );
+    },
+
+
+    shuffleOutfit() {
+
+    this.state.selectedOutfit =
+        null;
+
+   
+
+    this.generateOutfit();
+    },
+
+
+    anotherOutfit() {
+
+    this.state.selectedOutfit =
+        null;
+
+    this.showScreen(
+        "occasion-screen"
+    );
+    },
+
+
+   
+
+    renderUploads(
+        category
+    ) {
+
+        const container =
+            document.querySelector(
+                `[data-fitcheck-uploads="${category}"]`
+            );
+
+
+        if (!container) {
+            return;
+        }
+
+
+        container.innerHTML =
+            "";
+
+
+        this.state
+            .wardrobe[
+                category
+            ]
+            .forEach(
+                item => {
+
+                    const wrapper =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    wrapper.className =
+                        "fitcheck-uploaded-item";
+
+
+                    const image =
+                        document.createElement(
+                            "img"
+                        );
+
+
+                    image.src =
+                        item.imageData;
+
+
+                    image.alt =
+                        item.name;
+
+
+                    image.className =
+                        "fitcheck-uploaded-image";
+
+
+                    if (
+                        item.isFullOutfit
+                    ) {
+
+                        const badge =
+                            document.createElement(
+                                "div"
+                            );
+
+
+                        badge.className =
+                            "full-outfit-badge";
+
+
+                        badge.textContent =
+                            "COMPLETE OUTFIT";
+
+
+                        wrapper.appendChild(
+                            badge
+                        );
+                    }
+
+
+                    const label =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    label.className =
+                        "item-label";
+
+
+                    label.textContent =
+                        item.name;
+
+
+                    const remove =
+                        document.createElement(
+                            "button"
+                        );
+
+
+                    remove.textContent =
+                        "×";
+
+
+                    remove.className =
+                        "fitcheck-remove-button";
+
+
+                    remove.type =
+                        "button";
+
+
+                    remove.addEventListener(
+                        "click",
+                        () => {
+
+                            this.removeImage(
+                                item.id,
+                                category
+                            );
+
+                        }
+                    );
+
+
+                    wrapper.appendChild(
+                        image
+                    );
+
+
+                    wrapper.appendChild(
+                        label
+                    );
+
+
+                    wrapper.appendChild(
+                        remove
+                    );
+
+
+                    container.appendChild(
+                        wrapper
+                    );
+                }
+            );
+    },
+
+
+    removeImage(
+        id,
+        category
+    ) {
+
+        const items =
+            this.state
+                .wardrobe[
+                    category
+                ];
+
+
+        const index =
+            items.findIndex(
+                item =>
+                    item.id === id
+            );
+
+
+        if (
+            index === -1
+        ) {
+
+            return;
+        }
+
+
+        items.splice(
+            index,
+            1
+        );
+
+
+        
+
+        this.state
+            .previousOutfitSignature =
+                null;
+
+
+        this.state
+            .outfitHistory =
+                [];
+
+
+        this.saveWardrobe();
+
+
+        this.renderUploads(
+            category
+        );
+
+
+        this.updateAllCounters();
+    },
+
+
+    
+    renderCollage(
+        outfit
+    ) {
+
+        const collage =
+            document.querySelector(
+                "[data-fitcheck-collage]"
+            );
+
+
+        if (!collage) {
+            return;
+        }
+
+
+        collage.innerHTML =
+            "";
+
+
+       
+
+        if (
+            outfit.fullOutfit
+        ) {
+
+            collage.appendChild(
+
+                this.createCollagePiece(
+                    outfit.fullOutfit,
+                    true
+                )
+
+            );
+        }
+
+
+       
+
+        if (
+            outfit.top
+        ) {
+
+            collage.appendChild(
+
+                this.createCollagePiece(
+                    outfit.top
+                )
+
+            );
+        }
+
+
+        if (
+            outfit.bottom
+        ) {
+
+            collage.appendChild(
+
+                this.createCollagePiece(
+                    outfit.bottom
+                )
+
+            );
+        }
+
+
+
+        if (
+            outfit.shoes
+        ) {
+
+            collage.appendChild(
+
+                this.createCollagePiece(
+                    outfit.shoes
+                )
+
+            );
+        }
+
+
+        
+
+        (
+            outfit.accessories ||
+            []
+        ).forEach(
+            accessory => {
+
+                collage.appendChild(
+
+                    this.createCollagePiece(
+                        accessory
+                    )
+
+                );
+            }
+        );
+    },
+
+
+    createCollagePiece(
+        item,
+        fullOutfit = false
+    ) {
+
+        const wrapper =
+            document.createElement(
+                "div"
+            );
+
+
+        wrapper.className =
+            fullOutfit
+
+                ? "fitcheck-collage-piece full-outfit-piece"
+
+                : "fitcheck-collage-piece";
+
+
+        const image =
+            document.createElement(
+                "img"
+            );
+
+
+        image.src =
+            item.imageData;
+
+
+        image.alt =
+            item.name;
+
+
+        image.className =
+            "fitcheck-collage-image";
+
+
+        wrapper.appendChild(
+            image
+        );
+
+
+        return wrapper;
+    },
+
+
+
+
+    renderOutfitDetails(
+        outfit
+    ) {
+
+        const occasion =
+            document.querySelector(
+                "[data-fitcheck-result-occasion]"
+            );
+
+
+        if (
+            occasion
+        ) {
+
+            occasion.textContent =
+                this.occasions[
+                    this.state
+                        .occasion
+                ];
+        }
+
+
+        const reason =
+            document.querySelector(
+                "[data-fitcheck-result-reason]"
+            );
+
+
+        if (
+            reason
+        ) {
+
+            reason.textContent =
+                outfit.reason;
+        }
+
+
+        const top =
+            document.querySelector(
+                "[data-fitcheck-result-top]"
+            );
+
+
+        if (
+            top
+        ) {
+
+            top.textContent =
+                outfit.top
+                    ? outfit.top.name
+                    : "None";
+        }
+
+
+        const bottom =
+            document.querySelector(
+                "[data-fitcheck-result-bottom]"
+            );
+
+
+        if (
+            bottom
+        ) {
+
+            bottom.textContent =
+                outfit.bottom
+                    ? outfit.bottom.name
+                    : "None";
+        }
+
+
+        const shoes =
+            document.querySelector(
+                "[data-fitcheck-result-shoes]"
+            );
+
+
+        if (
+            shoes
+        ) {
+
+            shoes.textContent =
+                outfit.shoes
+                    ? outfit.shoes.name
+                    : "None";
+        }
+
+
+        const accessories =
+            document.querySelector(
+                "[data-fitcheck-result-accessories]"
+            );
+
+
+        if (
+            accessories
+        ) {
+
+            accessories.textContent =
+
+                outfit.accessories &&
+                outfit.accessories.length
+
+                    ? outfit.accessories
+                        .map(
+                            item =>
+                                item.name
+                        )
+                        .join(
+                            ", "
+                        )
+
+                    : "None";
+        }
+
+
+        const full =
+            document.querySelector(
+                "[data-fitcheck-result-full]"
+            );
+
+
+        if (
+            full
+        ) {
+
+            full.textContent =
+                outfit.fullOutfit
+                    ? outfit.fullOutfit.name
+                    : "None";
+        }
+
+
+        const id =
+            document.querySelector(
+                "[data-fitcheck-result-id]"
+            );
+
+
+        if (
+            id
+        ) {
+
+            id.textContent =
+                outfit.signature;
+        }
+    },
+
+
+    updateLoadingMessage(
+        message
+    ) {
+
+        const element =
+            document.querySelector(
+                "[data-fitcheck-loading-message]"
+            );
+
+
+        if (
+            element
+        ) {
+
+            element.textContent =
+                message;
+        }
+    },
+
+
+    /* =====================================================
+       RANDOM ITEM
+       ===================================================== */
+
+    randomItem(
+        array
+    ) {
+
+        if (
+            !array ||
+            !array.length
+        ) {
+
+            return null;
+        }
+
+
+        return array[
+            Math.floor(
+                Math.random() *
+                array.length
+            )
+        ];
+    }
+};
+
+
+
+document.addEventListener(
+    "click",
+    function(event) {
+
+        const button =
+            event.target.closest(
+                "[data-action]"
+            );
+
+
+        if (!button) {
+            return;
+        }
+
+
+        const action =
+            button.dataset.action;
+
+
+        if (
+            action === "start"
+        ) {
+
+            FitCheck.start();
+        }
+
+
+        else if (
+            action === "next"
+        ) {
+
+            FitCheck.nextCategory();
+        }
+
+
+        else if (
+            action === "previous"
+        ) {
+
+            FitCheck.previousCategory();
+        }
+
+
+        else if (
+            action === "occasion"
+        ) {
+
+            FitCheck.selectOccasion(
+                button.dataset.occasion
+            );
+        }
+
+
+        else if (
+            action ===
+            "shuffle-outfit"
+        ) {
+             FitCheck.shuffleOutfit();
+        }
+
+
+        else if (
+            action ===
+            "another-outfit"
+        ) {
+            FitCheck.anotherOutfit();
+        }
+
+
+        else if (
+            action ===
+            "edit-wardrobe"
+        ) {
+
+            FitCheck.editWardrobe();
+        }
+
+
+        else if (
+            action ===
+            "clear-wardrobe"
+        ) {
+
+            FitCheck.clearWardrobe();
+        }
+
+    }
+);
+
+
+
+
+document.addEventListener(
+    "change",
+    function(event) {
+
+        const input =
+            event.target.closest(
+                "[data-fitcheck-upload]"
+            );
+
+
+        if (!input) {
+            return;
+        }
+
+
+        const category =
+            input.dataset
+                .uploadCategory;
+
+
+        const type =
+            input.dataset
+                .uploadType ||
+            category;
+
+
+        const files =
+            Array.from(
+                input.files || []
+            );
+
+
+        files.forEach(
+            file => {
+
+                FitCheck.addImage(
+                    file,
+                    category,
+                    type
+                );
+
+            }
+        );
+
+
+        input.value =
+            "";
+    }
+);
+
+
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        FitCheck.init();
+
+    }
+);
+
+</script>
+
+
+</body>
+
+</html>
+
