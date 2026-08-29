@@ -1,1 +1,7 @@
-# Fitcheck
+Fit Check is a playful, interactive fashion dashboard designed to make putting outfits together fun and stress-free. By creating a digital scrapbook of your personal wardrobe, the platform lets you sort clothing items by category, pick a style vibe tailored to your day, and watch as a smart matching engine instantly shuffles your tops, bottoms, shoes, and accessories into a perfectly styled look.
+
+The Landing Hub: Start your day with a bold greeting asking, "What are you wearing today?" Your Digital Closet: A central locker surrounded by large, interactive scrapbook sticky notes displaying your collected items. The Scrapbook Studio: An easy-to-use uploading bay where you can snap or select photos to organize your tops, bottoms, shoes, and accessories. The Vibe Rack: Choose your day's agenda by selecting stylized clothing hangers—ranging from a structured Work Day to a fun Night Out. The Instant Staging Loop: A beautiful watermelon-themed processing screen that prepares your curated look behind the scenes. The Final Polaroid View: See your final coordinated outfit stacked perfectly onto a vintage Polaroid canvas sheet, complete with a Shuffle button to mix it up until it is perfect.
+
+If we were given enough time we would have been able to add more features and designs
+
+The html, java, css is all in one file WE DIDNT HAVE THE OPPURTUNITY TO USE ALL OF OUR ASSETS DUE TO THE LIMITED TIME
